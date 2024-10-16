@@ -66,6 +66,62 @@ asmFunc:
     
     /*** STUDENTS: Place your code BELOW this line!!! **************/
 
+    /* Store dividend and divisor */
+    ldr r2, =dividend
+    str r0, [r2] /* Store dividend to r0 */
+    ldr r2, =divisor
+    str r1, [r2] /* Store divisor to r1 */
+    
+    /* Set mod and quotient to 0 */
+    ldr r2, =quotient
+    movs r3, 0 /* Move 0 into r3 */
+    str r3, [r2] /* Store 0 into quotient */
+    ldr r2, =mod
+    str r3, [r2] /* Store 0 into mod */
+    
+    /* Make sure dividend and divisor != 0 */
+    cmp r0, 0
+    beq error /* Branch to error if dividend (r0) = 0 */
+    cmp r1, 0
+    beq error /* Branch to error if divisor (r1) = 0 */
+    
+    /* Prepare for subtraction loop */
+    movs r4, 0 /* Move 0 into r4 */
+    
+division_loop:
+    cmp r0, r1 /* Compare dividend (r0) to divisor (r1) */
+    blt division_finish /* Branch to division_finish if dividend < divisor */
+    subs r0, r0, r1 /* Subtract divisor (r1) from dividend (r0) */
+    adds r4, r4, 1 /* Add 1 to r4 */
+    b division_loop /* Loop back to division_loop */
+
+division_finish:
+    /* Store quotient and mod */
+    ldr r2, =quotient
+    str r4, [r2] /* Store quotient to r4 */
+    ldr r2, =mod
+    str r0, [r2] /* Store mod to r0 */
+    
+    /* Set we_have_a_problem to 0 */
+    ldr r2, =we_have_a_problem
+    movs r3, 0 /* Move 0 into r3 */
+    str r3, [r2] /* Store 0 into we_have_a_problem */
+    
+    /* Set r0 to quotient address */
+    ldr r0, =quotient
+    
+    /* We are done! */
+    b done /* Branch to done */
+
+error:
+    /* Set we_have_a_problem to 1 */
+    ldr r2, =we_have_a_problem
+    movs r3, 1 /* Move 1 into r3 */
+    str r3, [r2] /* Store r3 into we_have_a_problem */
+    
+    /* Set r0 to quotient address */
+    ldr r0, =quotient
+    b done /* Branch to done */
     
     /*** STUDENTS: Place your code ABOVE this line!!! **************/
 
